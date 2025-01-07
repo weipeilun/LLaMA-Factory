@@ -52,6 +52,7 @@ class Template:
     replace_eos: bool
     replace_jinja_template: bool
     mm_plugin: "BasePlugin"
+    padding: Union[bool, str]
 
     def encode_oneturn(
         self,
@@ -139,7 +140,7 @@ class Template:
         for elem in elements:
             if isinstance(elem, str):
                 if len(elem) != 0:
-                    token_ids += tokenizer.encode(elem, add_special_tokens=False)
+                    token_ids += tokenizer.encode(elem, add_special_tokens=False, padding=self.padding)
             elif isinstance(elem, dict):
                 token_ids += [tokenizer.convert_tokens_to_ids(elem.get("token"))]
             elif isinstance(elem, set):
@@ -218,6 +219,7 @@ def _register_template(
     replace_eos: bool = False,
     replace_jinja_template: bool = False,
     mm_plugin: "BasePlugin" = get_mm_plugin(name="base"),
+    padding: Union[bool, str] = False,
 ) -> None:
     r"""
     Registers a chat template.
@@ -268,6 +270,7 @@ def _register_template(
         replace_eos=replace_eos,
         replace_jinja_template=replace_jinja_template,
         mm_plugin=mm_plugin,
+        padding=padding,
     )
 
 
@@ -914,11 +917,18 @@ _register_template(
 _register_template(
     name="llava_next_video",
     format_user=StringFormatter(slots=["USER: {{content}} ASSISTANT:"]),
-    default_system=(
-        "A chat between a curious user and an artificial intelligence assistant. "
-        "The assistant gives helpful, detailed, and polite answers to the user's questions."
-    ),
     mm_plugin=get_mm_plugin(name="llava_next_video", image_token="<image>", video_token="<video>"),
+    padding=True,
+)
+
+
+# copied from llava_next_video template
+# weipeilun todo: format_user
+_register_template(
+    name="llava_onevision",
+    format_user=StringFormatter(slots=["USER: {{content}} ASSISTANT:"]),
+    mm_plugin=get_mm_plugin(name="llava_ivy", image_token="<image>", video_token="<video>"),
+    padding=True,
 )
 
 

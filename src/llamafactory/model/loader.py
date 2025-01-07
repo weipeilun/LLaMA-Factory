@@ -43,7 +43,25 @@ class TokenizerModule(TypedDict):
     processor: Optional["ProcessorMixin"]
 
 
-def _get_init_kwargs(model_args: "ModelArguments") -> Dict[str, Any]:
+def _get_processor_init_kwargs(model_args: "ModelArguments") -> Dict[str, Any]:
+    r"""
+    Gets arguments to load config/tokenizer/model.
+
+    Note: including inplace operation of model_args.
+    """
+    skip_check_imports()
+    model_args.model_name_or_path = try_download_model_from_other_hub(model_args)
+    return {
+        "trust_remote_code": model_args.trust_remote_code,
+        "cache_dir": model_args.cache_dir,
+        "revision": model_args.model_revision,
+        "token": model_args.hf_hub_token,
+        "min_pixels": model_args.min_pixels,
+        "max_pixels": model_args.max_pixels,
+    }
+
+
+def _get_model_init_kwargs(model_args: "ModelArguments") -> Dict[str, Any]:
     r"""
     Gets arguments to load config/tokenizer/model.
 
@@ -65,7 +83,7 @@ def load_tokenizer(model_args: "ModelArguments") -> "TokenizerModule":
 
     Note: including inplace operation of model_args.
     """
-    init_kwargs = _get_init_kwargs(model_args)
+    init_kwargs = _get_processor_init_kwargs(model_args)
     config = load_config(model_args)
     try:
         tokenizer = AutoTokenizer.from_pretrained(
@@ -115,7 +133,7 @@ def load_config(model_args: "ModelArguments") -> "PretrainedConfig":
     r"""
     Loads model config.
     """
-    init_kwargs = _get_init_kwargs(model_args)
+    init_kwargs = _get_model_init_kwargs(model_args)
     return AutoConfig.from_pretrained(model_args.model_name_or_path, **init_kwargs)
 
 
@@ -129,7 +147,7 @@ def load_model(
     r"""
     Loads pretrained model.
     """
-    init_kwargs = _get_init_kwargs(model_args)
+    init_kwargs = _get_model_init_kwargs(model_args)
     config = load_config(model_args)
     patch_config(config, tokenizer, model_args, init_kwargs, is_trainable)
     apply_liger_kernel(config, model_args, is_trainable, require_logits=(finetuning_args.stage not in ["pt", "sft"]))

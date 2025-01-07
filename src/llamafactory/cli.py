@@ -18,15 +18,16 @@ import subprocess
 import sys
 from enum import Enum, unique
 
-from . import launcher
-from .api.app import run_api
-from .chat.chat_model import run_chat
-from .eval.evaluator import run_eval
-from .extras import logging
-from .extras.env import VERSION, print_env
-from .extras.misc import get_device_count
-from .train.tuner import export_model, run_exp
-from .webui.interface import run_web_demo, run_web_ui
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from src.llamafactory import launcher
+from src.llamafactory.api.app import run_api
+from src.llamafactory.chat.chat_model import run_chat
+from src.llamafactory.eval.evaluator import run_eval
+from src.llamafactory.extras import logging
+from src.llamafactory.extras.env import VERSION, print_env
+from src.llamafactory.extras.misc import get_device_count
+from src.llamafactory.train.tuner import export_model, run_exp
+from src.llamafactory.webui.interface import run_web_demo, run_web_ui
 
 
 USAGE = (

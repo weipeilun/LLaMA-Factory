@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import math
+from PIL import Image
+import numpy as np
 from enum import Enum, unique
 from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Set, TypedDict, Union
 
@@ -90,3 +93,35 @@ def split_dataset(
         val_size = int(data_args.val_size) if data_args.val_size > 1 else data_args.val_size
         dataset = dataset.train_test_split(test_size=val_size, seed=seed)
         return DatasetDict({"train": dataset["train"], "validation": dataset["test"]})
+    
+    
+def resize_and_cut(frame: np.ndarray, **kwargs):
+    width_times = int(kwargs.get("width_times", 3))
+    height_times = int(kwargs.get("height_times", 2))
+    video_processor = kwargs.get("video_processor")
+    width, height = kwargs.get("width", 336 * width_times), kwargs.get("height", 336 * height_times)
+    frame = video_processor.resize(frame, {"shortest_edge": height})
+    
+    # padding the long edge
+    if frame.shape[1] < width:
+        new_image = np.zeros_like(frame, shape=(height, width, 3))
+
+        # If the image is too small, pad it with zeros
+        top_pad = math.ceil((height - frame.shape[0]) / 2)
+        bottom_pad = top_pad + frame.shape[0]
+        left_pad = math.ceil((width - frame.shape[1]) / 2)
+        right_pad = left_pad + frame.shape[1]
+        new_image[top_pad:bottom_pad, left_pad:right_pad, ...] = frame
+        frame = new_image
+        
+    frames = []
+    width_start = (frame.shape[1] - width) // 2
+    height_start = (frame.shape[0] - height) // 2
+    for height_idx in range(0, height_times):
+        for width_idx in range(0, width_times):
+            frame_crop = frame[height_start + height_idx * 336:height_start + height_idx * 336 + 336, width_start + width_idx * 336:width_start + width_idx * 336 + 336, :]
+            # for debugging
+            # frame_show = Image.fromarray(frame_crop)
+            # frame_show.show(f'test_{width_idx}_{height_idx}')
+            frames.append(frame_crop)
+    return frames

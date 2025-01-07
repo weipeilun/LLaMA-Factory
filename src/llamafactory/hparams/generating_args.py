@@ -70,6 +70,10 @@ class GeneratingArguments:
         default=True,
         metadata={"help": "Whether or not to remove special tokens in the decoding."},
     )
+    ignore_keys: Optional[str] = field(
+        default=None,
+        metadata={"help": "Keys to ignore in the loss calculation."},
+    )
 
     def to_dict(self, obey_generation_config: bool = False) -> Dict[str, Any]:
         args = asdict(self)

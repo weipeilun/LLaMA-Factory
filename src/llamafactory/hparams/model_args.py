@@ -62,13 +62,21 @@ class ProcessorArguments:
         default=512 * 512,
         metadata={"help": "Keeps the number of pixels of image below this resolution."},
     )
+    # video_resolution: int = field(
+    #     default=128 * 128,
+    #     metadata={"help": "Keeps the number of pixels of video below this resolution."},
+    # )
     video_resolution: int = field(
-        default=128 * 128,
-        metadata={"help": "Keeps the number of pixels of video below this resolution."},
+        default=1024 * 1024,
+        metadata={"help": "Keeps the number of pixels of video below this resolution. -- modified by Peter Wei"},
     )
+    # video_fps: float = field(
+    #     default=2.0,
+    #     metadata={"help": "The frames to sample per second for video inputs."},
+    # )
     video_fps: float = field(
-        default=2.0,
-        metadata={"help": "The frames to sample per second for video inputs."},
+        default=10.0,
+        metadata={"help": "The frames to sample per second for video inputs. -- modified by Peter Wei"},
     )
     video_maxlen: int = field(
         default=64,
@@ -308,6 +316,14 @@ class ModelArguments(QuantizationArguments, ProcessorArguments, ExportArguments,
         default=False,
         init=False,
         metadata={"help": "Whether use block diag attention or not, derived from `neat_packing`. Do not specify it."},
+    )
+    min_pixels: Optional[int] = field(
+        default=3136,
+        metadata={"help": "The minimum number of pixels for image inputs."},
+    )
+    max_pixels: Optional[int] = field(
+        default=12845056,
+        metadata={"help": "The maximum number of pixels for image inputs."},
     )
 
     def __post_init__(self):

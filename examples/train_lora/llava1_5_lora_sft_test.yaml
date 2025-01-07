@@ -9,15 +9,16 @@ finetuning_type: lora
 lora_target: all
 
 ### dataset
-dataset: racing_status_estimation_video
+dataset: racing_status_estimation_video_test
+eval_dataset: racing_status_estimation_video_test
 template: llava_next_video
 cutoff_len: 32768
-max_samples: 6000
+max_samples: 3000
 overwrite_cache: true
 preprocessing_num_workers: 24
 
 ### output
-output_dir: saves/llava-next-video/lora/sft_1225
+output_dir: saves/llava-next-video/lora/sft_test
 logging_steps: 5
 save_steps: 50
 plot_loss: true
@@ -35,7 +36,7 @@ ddp_timeout: 180000000
 ignore_keys: ['past_key_values', 'image_hidden_states', 'video_hidden_states']
 
 ### eval
-val_size: 0.1
+val_size: 0
 per_device_eval_batch_size: 1
 eval_strategy: steps
 eval_steps: 50

@@ -1100,6 +1100,18 @@ register_model_group(
 
 register_model_group(
     models={
+        "AI-Safeguard/Ivy-VL-llava": {
+            DownloadSource.DEFAULT: "AI-Safeguard/Ivy-VL-llava",
+            DownloadSource.MODELSCOPE: "AI-Safeguard/Ivy-VL-llava",
+        },
+    },
+    template="llava_onevision",
+    vision=True,
+)
+
+
+register_model_group(
+    models={
         "LLaVA-NeXT-Video-7B-32k-Chat": {
             DownloadSource.DEFAULT: "llava-hf/LLaVA-NeXT-Video-7B-32K-hf",
             DownloadSource.MODELSCOPE: "swift/LLaVA-NeXT-Video-7B-32K-hf",

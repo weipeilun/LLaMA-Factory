@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: llava-hf/LLaVA-NeXT-Video-7B-32K-hf
+model_name_or_path: Qwen/Qwen2-VL-2B-Instruct
 trust_remote_code: true
 
 ### method
@@ -9,15 +9,16 @@ finetuning_type: lora
 lora_target: all
 
 ### dataset
-dataset: racing_status_estimation_video
-template: llava_next_video
+dataset: racing_status_estimation_video_v2_test
+eval_dataset: racing_status_estimation_video_v2_test
+template: qwen2_vl
 cutoff_len: 32768
 max_samples: 6000
 overwrite_cache: true
 preprocessing_num_workers: 24
 
 ### output
-output_dir: saves/llava-next-video/lora/sft_1225
+output_dir: saves/qwen2_vl/lora/sft_test
 logging_steps: 5
 save_steps: 50
 plot_loss: true
@@ -31,11 +32,16 @@ num_train_epochs: 3.0
 lr_scheduler_type: cosine
 warmup_ratio: 0.1
 bf16: true
+flash_attn: fa2
 ddp_timeout: 180000000
-ignore_keys: ['past_key_values', 'image_hidden_states', 'video_hidden_states']
+ignore_keys: ["rope_deltas"]
+video_resolution: 2073600
+min_pixels: 200704
+# max_pixels: 501760
+max_pixels: 2073600
 
 ### eval
-val_size: 0.1
+val_size: 0
 per_device_eval_batch_size: 1
 eval_strategy: steps
 eval_steps: 50

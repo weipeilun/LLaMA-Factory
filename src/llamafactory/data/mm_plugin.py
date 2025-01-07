@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple, TypedDi
 import numpy as np
 import torch
 from transformers.image_utils import get_image_size, to_numpy_array
+from .data_utils import resize_and_cut
 from typing_extensions import override
 
 from ..extras.constants import IGNORE_INDEX, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER
@@ -183,7 +184,11 @@ class BasePlugin:
                 image_resolution=getattr(processor, "video_resolution", 128 * 128),
                 video_fps=getattr(processor, "video_fps", 2.0),
                 video_maxlen=getattr(processor, "video_maxlen", 64),
+                video_processor=video_processor,
             )
+            # # for debug
+            # for idx, video in enumerate(videos[0]):
+            #     video.show(str(idx))
             input_dict["videos"] = videos
 
         mm_inputs = {}
@@ -410,7 +415,124 @@ class LlavaNextVideoPlugin(BasePlugin):
     ) -> Dict[str, Union[List[int], "torch.Tensor"]]:
         self._validate_input(images, videos)
         return self._get_mm_inputs(images, videos, processor)
+    
+    @override
+    def _regularize_videos(self, videos: Sequence["VideoInput"], **kwargs) -> List[List["ImageObject"]]:
+        r"""
+        Regularizes videos to avoid error. Including reading, resizing and converting.
+        """
+        results = []
+        for video in videos:
+            container = av.open(video, "r")
+            video_stream = next(stream for stream in container.streams if stream.type == "video")
+            total_frames = video_stream.frames
+            sample_frames = self._get_video_sample_frames(video_stream, **kwargs)
+            sample_indices = np.linspace(0, total_frames - 1, sample_frames).astype(np.int32)
+            frames: List["ImageObject"] = []
+            container.seek(0)
+            for frame_idx, frame in enumerate(container.decode(video_stream)):
+                if frame_idx in sample_indices:
+                    cut_image_list = resize_and_cut(np.array(frame.to_image()), **kwargs)
+                    frames.extend([Image.fromarray(x) for x in cut_image_list])
+                    # frames.append(frame.to_image())
 
+            frames = self._regularize_images(frames, **kwargs)
+            results.append(frames)
+
+        return results
+
+class LlavaOnevisionPlugin(BasePlugin):
+    @override
+    def process_messages(
+        self,
+        messages: Sequence[Dict[str, str]],
+        images: Sequence["ImageInput"],
+        videos: Sequence["VideoInput"],
+        processor: Optional["ProcessorMixin"],
+    ) -> List[Dict[str, str]]:
+        self._validate_input(images, videos)
+        num_image_tokens, num_video_tokens = 0, 0
+        messages = deepcopy(messages)
+        mm_inputs = self._get_mm_inputs(images, videos, processor)
+        if "pixel_values" in mm_inputs:
+            image_sizes = iter(mm_inputs["image_sizes"])
+            height, width = get_image_size(to_numpy_array(mm_inputs["pixel_values"][0][0]))
+            for message in messages:
+                content = message["content"]
+                while IMAGE_PLACEHOLDER in content:
+                    if self.expand_mm_tokens:
+                        orig_height, orig_width = next(image_sizes)
+                        image_seqlen = processor._get_number_of_features(orig_height, orig_width, height, width)
+                        if getattr(processor, "vision_feature_select_strategy") == "default":
+                            image_seqlen -= 1
+                    else:
+                        image_seqlen = 1
+
+                    num_image_tokens += 1
+                    content = content.replace(IMAGE_PLACEHOLDER, "{{image}}" * image_seqlen, 1)
+
+                message["content"] = content.replace("{{image}}", self.image_token)
+
+        if "pixel_values_videos" in mm_inputs:
+            pixel_values_video = to_numpy_array(mm_inputs.get("pixel_values_videos")[0])
+            height, width = get_image_size(pixel_values_video[0])
+            num_frames = pixel_values_video.shape[0]  # frame dim is always after batch dim
+            image_seqlen = (height // processor.patch_size) * (width // processor.patch_size)
+            video_seqlen = image_seqlen // 4 * num_frames  # divide by 4 needed for avg pooling layer
+            video_seqlen = video_seqlen if self.expand_mm_tokens else 1
+            for message in messages:
+                content = message["content"]
+                while VIDEO_PLACEHOLDER in content:
+                    num_video_tokens += 1
+                    content = content.replace(VIDEO_PLACEHOLDER, "{{video}}" * video_seqlen, 1)
+
+                message["content"] = content.replace("{{video}}", self.video_token)
+
+        if len(images) != num_image_tokens:
+            raise ValueError(f"The number of images does not match the number of {IMAGE_PLACEHOLDER} tokens.")
+
+        if len(videos) != num_video_tokens:
+            raise ValueError(f"The number of videos does not match the number of {VIDEO_PLACEHOLDER} tokens.")
+
+        return messages
+
+    @override
+    def get_mm_inputs(
+        self,
+        images: Sequence["ImageInput"],
+        videos: Sequence["VideoInput"],
+        imglens: Sequence[int],
+        vidlens: Sequence[int],
+        batch_ids: Sequence[List[int]],
+        processor: Optional["ProcessorMixin"],
+    ) -> Dict[str, Union[List[int], "torch.Tensor"]]:
+        self._validate_input(images, videos)
+        return self._get_mm_inputs(images, videos, processor)
+    
+    @override
+    def _regularize_videos(self, videos: Sequence["VideoInput"], **kwargs) -> List[List["ImageObject"]]:
+        r"""
+        Regularizes videos to avoid error. Including reading, resizing and converting.
+        """
+        results = []
+        for video in videos:
+            container = av.open(video, "r")
+            video_stream = next(stream for stream in container.streams if stream.type == "video")
+            total_frames = video_stream.frames
+            sample_frames = self._get_video_sample_frames(video_stream, **kwargs)
+            sample_indices = np.linspace(0, total_frames - 1, sample_frames).astype(np.int32)
+            frames: List["ImageObject"] = []
+            container.seek(0)
+            for frame_idx, frame in enumerate(container.decode(video_stream)):
+                if frame_idx in sample_indices:
+                    cut_image_list = resize_and_cut(np.array(frame.to_image()), **kwargs)
+                    frames.extend([Image.fromarray(x) for x in cut_image_list])
+                    # frames.append(frame.to_image())
+
+            frames = self._regularize_images(frames, **kwargs)
+            results.append(frames)
+
+        return results
 
 class PaliGemmaPlugin(BasePlugin):
     @override
@@ -793,6 +915,7 @@ PLUGINS = {
     "llava": LlavaPlugin,
     "llava_next": LlavaNextPlugin,
     "llava_next_video": LlavaNextVideoPlugin,
+    "llava_ivy": LlavaOnevisionPlugin,
     "paligemma": PaliGemmaPlugin,
     "pixtral": PixtralPlugin,
     "qwen2_vl": Qwen2vlPlugin,

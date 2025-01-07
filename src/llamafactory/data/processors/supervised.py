@@ -14,7 +14,7 @@
 
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple
-
+import numpy as np
 from ...extras import logging
 from ...extras.constants import IGNORE_INDEX
 from .processor_utils import greedy_knapsack, infer_seqlen

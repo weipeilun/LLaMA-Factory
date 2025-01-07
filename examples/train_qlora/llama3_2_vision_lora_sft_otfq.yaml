@@ -1,6 +1,7 @@
 ### model
-model_name_or_path: llava-hf/LLaVA-NeXT-Video-7B-32K-hf
-trust_remote_code: true
+model_name_or_path: meta-llama/Llama-3.2-11B-Vision-Instruct
+quantization_bit: 8
+quantization_method: bitsandbytes  # choices: [bitsandbytes (4/8), hqq (2/3/4/5/6/8), eetq (8)]
 
 ### method
 stage: sft
@@ -9,17 +10,17 @@ finetuning_type: lora
 lora_target: all
 
 ### dataset
-dataset: racing_status_estimation_video
-template: llava_next_video
-cutoff_len: 32768
-max_samples: 6000
+dataset: racing_status_estimation
+template: mllama
+cutoff_len: 2048
+max_samples: 1000
 overwrite_cache: true
-preprocessing_num_workers: 24
+preprocessing_num_workers: 16
 
 ### output
-output_dir: saves/llava-next-video/lora/sft_1225
-logging_steps: 5
-save_steps: 50
+output_dir: saves/llama3_2-11b/qlora/sft
+logging_steps: 10
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 
@@ -32,10 +33,9 @@ lr_scheduler_type: cosine
 warmup_ratio: 0.1
 bf16: true
 ddp_timeout: 180000000
-ignore_keys: ['past_key_values', 'image_hidden_states', 'video_hidden_states']
 
 ### eval
 val_size: 0.1
 per_device_eval_batch_size: 1
 eval_strategy: steps
-eval_steps: 50
+eval_steps: 500
