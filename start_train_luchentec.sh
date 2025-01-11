@@ -1,4 +1,4 @@
-base_dir=/root/filesystem/workspace/LLaMA-Factory
+base_dir=/root/filesystem/model_training_storage/workspace/LLaMA-Factory
 cd $base_dir
 export PYTHONPATH=$base_dir:$base_dir/src:$base_dir/data:$PYTHONPATH
 export NCCL_P2P_DISABLE="1"

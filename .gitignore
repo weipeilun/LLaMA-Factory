@@ -173,3 +173,4 @@ output/
 wandb/
 swanlog/
 generated_predictions.jsonl
+# .git-rewrite/
