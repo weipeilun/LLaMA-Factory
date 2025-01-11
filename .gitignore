@@ -173,4 +173,5 @@ output/
 wandb/
 swanlog/
 generated_predictions.jsonl
-# .git-rewrite/
+.git-rewrite/
+data/video_2s
