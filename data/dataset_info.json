@@ -105,6 +105,34 @@
       "assistant_tag": "assistant"
     }
   },
+  "racing_status_estimation_video_v2_autodl": {
+    "file_name": "/root/autodl-tmp/racing/data_formatted_v2.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "videos": "videos"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
+  "racing_status_estimation_video_v2_autodl_test": {
+    "file_name": "/root/autodl-tmp/racing/data_formatted_v2_2s_test.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "messages",
+      "videos": "videos"
+    },
+    "tags": {
+      "role_tag": "role",
+      "content_tag": "content",
+      "user_tag": "user",
+      "assistant_tag": "assistant"
+    }
+  },
   "identity": {
     "file_name": "identity.json"
   },

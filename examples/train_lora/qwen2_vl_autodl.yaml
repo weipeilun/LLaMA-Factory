@@ -1,0 +1,48 @@
+### model
+model_name_or_path: /root/autodl-tmp/models/models--Qwen--Qwen2-VL-2B-Instruct
+trust_remote_code: true
+
+### method
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_target: all
+
+### dataset
+dataset: racing_status_estimation_video_v2_autodl
+template: qwen2_vl
+cutoff_len: 32768
+max_samples: 20000
+overwrite_cache: true
+preprocessing_num_workers: 96
+
+### output
+output_dir: saves/qwen2_vl/lora/sft_250117_autodl
+logging_steps: 5
+save_steps: 50
+plot_loss: true
+overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 2
+learning_rate: 1.0e-4
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+flash_attn: fa2
+ddp_timeout: 180000000
+ignore_keys: ["rope_deltas"]
+video_resolution: 2073600
+min_pixels: 200704
+# max_pixels: 501760
+max_pixels: 746432
+# max_pixels: 786432
+# max_pixels: 1049088
+
+### eval
+val_size: 0.05
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 100
