@@ -17,17 +17,17 @@ overwrite_cache: true
 preprocessing_num_workers: 24
 
 ### output
-output_dir: saves/qwen2_vl/lora/sft_250106
+output_dir: saves/qwen2_vl/lora/sft_250119
 logging_steps: 5
-save_steps: 50
+save_steps: 200
 plot_loss: true
 overwrite_output_dir: true
 
 ### train
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 8
-learning_rate: 1.0e-4
-num_train_epochs: 3.0
+learning_rate: 2.0e-5
+num_train_epochs: 6.0
 lr_scheduler_type: cosine
 warmup_ratio: 0.1
 bf16: true
@@ -36,11 +36,10 @@ ddp_timeout: 180000000
 ignore_keys: ["rope_deltas"]
 video_resolution: 2073600
 min_pixels: 200704
-# max_pixels: 501760
-max_pixels: 1049088
+max_pixels: 746432
 
 ### eval
 val_size: 0.05
 per_device_eval_batch_size: 1
 eval_strategy: steps
-eval_steps: 50
+eval_steps: 200

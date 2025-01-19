@@ -1,0 +1,159 @@
+./start_train.sh: 2: cd: can't cd to /root/workspace/LLaMA-Factory
+python: can't open file '/root/workspace/LLaMA-Factory/src/llamafactory/cli.py': [Errno 13] Permission denied
+./start_train.sh: 2: cd: can't cd to /root/workspace/LLaMA-Factory
+python: can't open file '/root/workspace/LLaMA-Factory/src/llamafactory/cli.py': [Errno 13] Permission denied
+[INFO|2025-01-19 21:58:28] src.llamafactory.hparams.parser:359 >> Process rank: 0, device: cuda:0, n_gpu: 1, distributed training: False, compute dtype: torch.bfloat16
+[INFO|configuration_utils.py:679] 2025-01-19 21:58:29,554 >> loading configuration file config.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/config.json
+[INFO|configuration_utils.py:746] 2025-01-19 21:58:29,555 >> Model config Qwen2VLConfig {
+  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 1536,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 8960,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2_vl",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 2,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.46.3",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "hidden_size": 1536,
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 151936
+}
+
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file vocab.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/vocab.json
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file merges.txt from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/merges.txt
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file tokenizer.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/tokenizer.json
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file special_tokens_map.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:32,048 >> loading file tokenizer_config.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2475] 2025-01-19 21:58:32,210 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|image_processing_base.py:375] 2025-01-19 21:58:33,195 >> loading configuration file preprocessor_config.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/preprocessor_config.json
+[INFO|image_processing_base.py:375] 2025-01-19 21:58:33,494 >> loading configuration file preprocessor_config.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/preprocessor_config.json
+[INFO|image_processing_base.py:429] 2025-01-19 21:58:33,494 >> Image processor Qwen2VLImageProcessor {
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "Qwen2VLImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "max_pixels": 746432,
+  "merge_size": 2,
+  "min_pixels": 200704,
+  "patch_size": 14,
+  "processor_class": "Qwen2VLProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "max_pixels": 12845056,
+    "min_pixels": 3136
+  },
+  "temporal_patch_size": 2
+}
+
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,779 >> loading file vocab.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/vocab.json
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,779 >> loading file merges.txt from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/merges.txt
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,780 >> loading file tokenizer.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/tokenizer.json
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,780 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,780 >> loading file special_tokens_map.json from cache at None
+[INFO|tokenization_utils_base.py:2211] 2025-01-19 21:58:33,780 >> loading file tokenizer_config.json from cache at /home/weipeilun/.cache/huggingface/hub/models--Qwen--Qwen2-VL-2B-Instruct/snapshots/895c3a49bc3fa70a340399125c650a463535e71c/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2475] 2025-01-19 21:58:33,933 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
+[INFO|processing_utils.py:755] 2025-01-19 21:58:34,763 >> Processor Qwen2VLProcessor:
+- image_processor: Qwen2VLImageProcessor {
+  "do_convert_rgb": true,
+  "do_normalize": true,
+  "do_rescale": true,
+  "do_resize": true,
+  "image_mean": [
+    0.48145466,
+    0.4578275,
+    0.40821073
+  ],
+  "image_processor_type": "Qwen2VLImageProcessor",
+  "image_std": [
+    0.26862954,
+    0.26130258,
+    0.27577711
+  ],
+  "max_pixels": 746432,
+  "merge_size": 2,
+  "min_pixels": 200704,
+  "patch_size": 14,
+  "processor_class": "Qwen2VLProcessor",
+  "resample": 3,
+  "rescale_factor": 0.00392156862745098,
+  "size": {
+    "max_pixels": 12845056,
+    "min_pixels": 3136
+  },
+  "temporal_patch_size": 2
+}
+
+- tokenizer: Qwen2TokenizerFast(name_or_path='Qwen/Qwen2-VL-2B-Instruct', vocab_size=151643, model_max_length=32768, is_fast=True, padding_side='left', truncation_side='right', special_tokens={'eos_token': '<|im_end|>', 'pad_token': '<|endoftext|>', 'additional_special_tokens': ['<|im_start|>', '<|im_end|>', '<|object_ref_start|>', '<|object_ref_end|>', '<|box_start|>', '<|box_end|>', '<|quad_start|>', '<|quad_end|>', '<|vision_start|>', '<|vision_end|>', '<|vision_pad|>', '<|image_pad|>', '<|video_pad|>']}, clean_up_tokenization_spaces=False),  added_tokens_decoder={
+	151643: AddedToken("<|endoftext|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151644: AddedToken("<|im_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151645: AddedToken("<|im_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151646: AddedToken("<|object_ref_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151647: AddedToken("<|object_ref_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151648: AddedToken("<|box_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151649: AddedToken("<|box_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151650: AddedToken("<|quad_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151651: AddedToken("<|quad_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151652: AddedToken("<|vision_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151653: AddedToken("<|vision_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151654: AddedToken("<|vision_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151655: AddedToken("<|image_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+	151656: AddedToken("<|video_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
+}
+
+{
+  "processor_class": "Qwen2VLProcessor"
+}
+
+[INFO|2025-01-19 21:58:34] src.llamafactory.data.template:157 >> Add <|im_end|> to stop words.
+[INFO|2025-01-19 21:58:34] src.llamafactory.data.loader:157 >> Loading dataset /home/weipeilun/playground/racing/racing_status_estimation/data_formatted_v2/data_formatted_v2.json...
+Setting num_proc from 24 back to 1 for the train split to disable multiprocessing as it only contains one shard.
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 2533 examples [00:00, 97437.29 examples/s]
+Converting format of dataset (num_proc=24):   0%|          | 0/2533 [00:00<?, ? examples/s]Converting format of dataset (num_proc=24): 100%|██████████| 2533/2533 [00:00<00:00, 15751.16 examples/s]
+Running tokenizer on dataset (num_proc=24):   0%|          | 0/2533 [00:00<?, ? examples/s]
